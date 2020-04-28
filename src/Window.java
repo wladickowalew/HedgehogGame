@@ -47,7 +47,6 @@ public class Window extends JFrame {
         addKeyListener(new myKey());
         setFocusable(true);
         setTitle("My First Game");
-        //setBounds(20, 20, Variables.FIELD_WIDTH, Variables.FIELD_HEIGHT);
         Container сontentPane = getContentPane();
         сontentPane.setLayout(new BorderLayout(0,0));
         myPanel = new Panel();

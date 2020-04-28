@@ -21,8 +21,7 @@ public class GameObject {
     }
 
     public void draw(Graphics gr) {
-        gr.drawImage(img, x, y,
-                Variables.CELL_SIZE, Variables.CELL_SIZE, null);
+        gr.drawImage(img, x, y, Variables.CELL_SIZE, Variables.CELL_SIZE, null);
     }
 
     public int getX() {
@@ -48,11 +47,11 @@ public class GameObject {
         }
     }
 
-    public boolean collisianWith(GameObject other) {
-        return this.x == other.x && this.y == other.y;
+    public boolean collisionWith(GameObject other) {
+        return collisionWith(other.getX(), other.getY());
     }
 
-    public boolean collisianWith(int x, int y) {
+    public boolean collisionWith(int x, int y) {
         return this.x == x && this.y == y;
     }
 }

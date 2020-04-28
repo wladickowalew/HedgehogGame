@@ -14,8 +14,6 @@ public class Panel extends JPanel {
     private ArrayList<Wall> walls;
 
     public Panel(){
-        Variables.computeValues();
-        Images.loadImages();
         setPreferredSize(new Dimension(Variables.FIELD_WIDTH, Variables.FIELD_HEIGHT));
         startGame();
     }
@@ -26,28 +24,24 @@ public class Panel extends JPanel {
     }
 
     public void stepArrow(int dx, int dy){
-        newCoordinates(dx * Variables.CELL_SIZE, dy * Variables.CELL_SIZE);
+        int newX = player.getX() + dx * Variables.CELL_SIZE;
+        int newY = player.getY() + dy * Variables.CELL_SIZE;
+        if (collisionWithAllObjects(newX, newY)) return;
+        player.setCoordinates(newX, newY);
         repaint();
     }
 
-    private void newCoordinates(int dx, int dy){
-        int newX = player.getX() + dx;
-        int newY = player.getY() + dy;
-        if (collisionWithAllObjects(newX, newY)) return;
-        player.setCoordinates(newX, newY);
-    }
-
     //collisions
-
+    //-------------------------------------------------------------------------------------------
     private boolean collisionWith(ArrayList list, GameObject object){
         return collisionWith(list, object.getX(), object.getY());
     }
 
     private boolean collisionWith(ArrayList list, int x, int y){
         for (GameObject object: (ArrayList<GameObject>)list)
-            if (object.collisianWith(x, y))
+            if (object.collisionWith(x, y))
                 return true;
-        return  false;
+        return false;
     }
 
     private boolean collisionWithAllObjects(GameObject object){
@@ -58,19 +52,20 @@ public class Panel extends JPanel {
         if (walls != null && collisionWith(walls, x, y)) return true;
         return false;
     }
+    //---------------------------------------------------------------------------------------------------
 
     public void addWalls(){
         walls = new ArrayList<Wall>();
         while (walls.size() < Variables.WALLS_COUNT){
             Wall wall = new Wall();
-            if (wall.collisianWith(player) || collisionWithAllObjects(wall))
+            if (wall.collisionWith(player) || collisionWithAllObjects(wall))
                 continue;
             walls.add(wall);
         }
     }
 
     //PAINT
-
+    //---------------------------------------------------------------------------------------------------
     public void drawGrass(Graphics gr){
         for (int i = 0; i < Variables.CELLS_H; i++){
             for (int j = 0; j < Variables.CELLS_W; j++){

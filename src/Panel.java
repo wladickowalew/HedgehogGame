@@ -69,8 +69,8 @@ public class Panel extends JPanel {
     public void drawGrass(Graphics gr){
         for (int i = 0; i < Variables.CELLS_H; i++){
             for (int j = 0; j < Variables.CELLS_W; j++){
-                gr.drawImage(Images.GRASS, j * Variables.CELL_SIZE,
-                                           i * Variables.CELL_SIZE, null);
+                gr.drawImage(Images.GRASS, j * Variables.CELL_SIZE, i * Variables.CELL_SIZE,
+                                 Variables.CELL_SIZE, Variables.CELL_SIZE,null);
             }
         }
     }

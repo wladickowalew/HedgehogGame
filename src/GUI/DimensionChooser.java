@@ -26,7 +26,7 @@ public class DimensionChooser {
 
     private static void addButton(int index){
         Dimension d = Variables.DIMENSIONS[index];
-        String text = "" + d.getWidth() + "x" + d.getHeight();
+        String text = "" + (int)d.getWidth() + "x" + (int)d.getHeight();
         JRadioButton button = new JRadioButton(text);
         if (d == DEFAULT)
             button.setSelected(true);
@@ -34,4 +34,5 @@ public class DimensionChooser {
         group.add(button);
         box.add(button);
     }
+
 }

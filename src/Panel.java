@@ -1,9 +1,6 @@
 import DataClasses.Images;
 import DataClasses.Variables;
-import Objects.GameObject;
-import Objects.Player;
-import Objects.Wall;
-
+import Objects.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -11,7 +8,9 @@ import java.util.ArrayList;
 public class Panel extends JPanel {
 
     private Player player;
+    private Exit exit;
     private ArrayList<Wall> walls;
+    private boolean isEnd;
 
     public Panel(){
         setPreferredSize(new Dimension(Variables.FIELD_WIDTH, Variables.FIELD_HEIGHT));
@@ -19,16 +18,27 @@ public class Panel extends JPanel {
     }
 
     private void startGame(){
+        isEnd = false;
         player = new Player();
+        exit = new Exit();
         addWalls();
     }
 
     public void stepArrow(int dx, int dy){
+        if (isEnd) return;
         int newX = player.getX() + dx * Variables.CELL_SIZE;
         int newY = player.getY() + dy * Variables.CELL_SIZE;
-        if (collisionWithAllObjects(newX, newY)) return;
+        if (collisionWith(walls, newX, newY)) return;
         player.setCoordinates(newX, newY);
+        if (player.collisionWith(exit))
+            endWinLevel();
+
         repaint();
+    }
+
+    private void endWinLevel(){
+        isEnd = true;
+        System.out.println("You Win!");
     }
 
     //collisions
@@ -49,6 +59,7 @@ public class Panel extends JPanel {
     }
 
     private boolean collisionWithAllObjects(int x, int y){
+        if (player.collisionWith(x, y) || exit.collisionWith(x, y)) return true;
         if (walls != null && collisionWith(walls, x, y)) return true;
         return false;
     }
@@ -58,7 +69,7 @@ public class Panel extends JPanel {
         walls = new ArrayList<Wall>();
         while (walls.size() < Variables.WALLS_COUNT){
             Wall wall = new Wall();
-            if (wall.collisionWith(player) || collisionWithAllObjects(wall))
+            if (collisionWithAllObjects(wall))
                 continue;
             walls.add(wall);
         }
@@ -78,6 +89,7 @@ public class Panel extends JPanel {
     public void drawObjects(Graphics gr){
         for (Wall wall: walls)
             wall.draw(gr);
+        exit.draw(gr);
         player.draw(gr);
     }
 

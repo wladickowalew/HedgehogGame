@@ -15,8 +15,11 @@ public class GameObject {
     }
 
     public GameObject(Image img) {
-        this.x = Variables.CELL_SIZE * (int) (Math.random() * Variables.CELLS_W);
-        this.y = Variables.CELL_SIZE * (int) (Math.random() * Variables.CELLS_H);
+        this.x = 0; this.y = 0;
+        while (this.x == 0 && this.y == 0) {
+            this.x = Variables.CELL_SIZE * (int) (Math.random() * Variables.CELLS_W);
+            this.y = Variables.CELL_SIZE * (int) (Math.random() * Variables.CELLS_H);
+        }
         this.img = img;
     }
 

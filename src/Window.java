@@ -19,17 +19,29 @@ public class Window extends JFrame {
         public void keyPressed(KeyEvent e) {
             int code = e.getKeyCode();
             switch (code) {
-                case 37: //left
+                case 100:
                     myPanel.stepArrow(-1, 0);
                     break;
-                case 38: //up
+                case 104:
                     myPanel.stepArrow(0, -1);
                     break;
-                case 39: //right
+                case 102:
                     myPanel.stepArrow(1, 0);
                     break;
-                case 40: //down
+                case 98:
                     myPanel.stepArrow(0, 1);
+                    break;
+                case 103:
+                    myPanel.stepArrow(-1, -1);
+                    break;
+                case 105:
+                    myPanel.stepArrow(1, -1);
+                    break;
+                case 97:
+                    myPanel.stepArrow(-1, 1);
+                    break;
+                case 99:
+                    myPanel.stepArrow(1, 1);
                     break;
                 default:
                     System.out.println("Pressed: " + code);

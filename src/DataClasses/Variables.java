@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class Variables {
     // constants
-    public static final int CELL_SIZE = 90;
+    public static final int CELL_SIZE = 40;
     public static final double WALLS_PERCENT = 0.3;
     public static final Dimension[] DIMENSIONS = {new Dimension(800,600),
                                                   new Dimension(1024,768),

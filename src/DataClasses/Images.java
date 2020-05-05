@@ -17,7 +17,7 @@ public class Images {
             PLAYER = ImageIO.read(new File("images/pers.png"));
             EXIT   = ImageIO.read(new File("images/exit.png"));
             COIN   = ImageIO.read(new File("images/coin.png"));
-            FIRE   = ImageIO.read(new File("images/coin.png"));
+            FIRE   = ImageIO.read(new File("images/fire.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

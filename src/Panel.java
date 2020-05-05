@@ -11,6 +11,7 @@ public class Panel extends JPanel {
     private Exit exit;
     private ArrayList<Wall> walls;
     private ArrayList<Coin> coins;
+    private ArrayList<Fire> fires;
     private boolean isEnd;
     private int coin_count;
 
@@ -26,6 +27,7 @@ public class Panel extends JPanel {
         coin_count = 0;
         addWalls();
         addCoins();
+        addFires();
     }
 
     public void stepArrow(int dx, int dy){
@@ -36,6 +38,8 @@ public class Panel extends JPanel {
         player.setCoordinates(newX, newY);
         if (player.collisionWith(exit))
             endWinLevel();
+        if (collisionWith(fires, player))
+            endLoseGame();
         if (collisionWith(coins, player)){
             coin_count++;
             for(int i = 0; i < coins.size(); i++){
@@ -52,6 +56,11 @@ public class Panel extends JPanel {
     private void endWinLevel(){
         isEnd = true;
         System.out.println("You Win! Coins: " + coin_count);
+    }
+
+    private void endLoseGame(){
+        isEnd = true;
+        System.out.println("You Lose! Coins: " + coin_count);
     }
 
     //collisions
@@ -75,6 +84,7 @@ public class Panel extends JPanel {
         if (player.collisionWith(x, y) || exit.collisionWith(x, y)) return true;
         if (walls != null && collisionWith(walls, x, y)) return true;
         if (coins != null && collisionWith(coins, x, y)) return true;
+        if (fires != null && collisionWith(fires, x, y)) return true;
         return false;
     }
     //---------------------------------------------------------------------------------------------------
@@ -99,6 +109,16 @@ public class Panel extends JPanel {
         }
     }
 
+    public void addFires(){
+        fires = new ArrayList<Fire>();
+        while (fires.size() < Variables.FIRE_COUNT){
+            Fire fire = new Fire();
+            if (collisionWithAllObjects(fire))
+                continue;
+            fires.add(fire);
+        }
+    }
+
     //PAINT
     //---------------------------------------------------------------------------------------------------
     public void drawGrass(Graphics gr){
@@ -115,6 +135,8 @@ public class Panel extends JPanel {
             wall.draw(gr);
         for (Coin coin: coins)
             coin.draw(gr);
+        for (Fire fire: fires)
+            fire.draw(gr);
         exit.draw(gr);
         player.draw(gr);
     }

@@ -6,6 +6,7 @@ public class Variables {
     // constants
     public static final int CELL_SIZE = 40;
     public static final double WALLS_PERCENT = 0.3;
+    public static final double COINS_PERCENT = 0.1;
     public static final Dimension[] DIMENSIONS = {new Dimension(800,600),
                                                   new Dimension(1024,768),
                                                   new Dimension(1200,600),
@@ -18,6 +19,7 @@ public class Variables {
     public static int FIELD_WIDTH;
     public static int FIELD_HEIGHT;
     public static int WALLS_COUNT;
+    public static int COINS_COUNT;
 
     public static void setDimension(Dimension d){
         CELLS_W = (int)d.getWidth()  / CELL_SIZE;
@@ -25,5 +27,6 @@ public class Variables {
         FIELD_WIDTH  = CELLS_W * CELL_SIZE;
         FIELD_HEIGHT = CELLS_H * CELL_SIZE;
         WALLS_COUNT = (int)(CELLS_H * CELLS_W * WALLS_PERCENT);
+        COINS_COUNT = (int)(CELLS_H * CELLS_W * COINS_PERCENT);
     }
 }

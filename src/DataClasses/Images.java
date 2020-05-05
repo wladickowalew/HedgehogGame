@@ -8,7 +8,7 @@ import java.io.IOException;
 public class Images {
 
     public static Image GRASS, PLAYER, EXIT;
-    public static Image WALL;
+    public static Image WALL, COIN, FIRE;
 
     public static void  loadImages(){
         try {
@@ -16,6 +16,8 @@ public class Images {
             WALL   = ImageIO.read(new File("images/wall.png"));
             PLAYER = ImageIO.read(new File("images/pers.png"));
             EXIT   = ImageIO.read(new File("images/exit.png"));
+            COIN   = ImageIO.read(new File("images/coin.png"));
+            FIRE   = ImageIO.read(new File("images/coin.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

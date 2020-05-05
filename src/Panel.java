@@ -10,7 +10,9 @@ public class Panel extends JPanel {
     private Player player;
     private Exit exit;
     private ArrayList<Wall> walls;
+    private ArrayList<Coin> coins;
     private boolean isEnd;
+    private int coin_count;
 
     public Panel(){
         setPreferredSize(new Dimension(Variables.FIELD_WIDTH, Variables.FIELD_HEIGHT));
@@ -21,7 +23,9 @@ public class Panel extends JPanel {
         isEnd = false;
         player = new Player();
         exit = new Exit();
+        coin_count = 0;
         addWalls();
+        addCoins();
     }
 
     public void stepArrow(int dx, int dy){
@@ -32,13 +36,22 @@ public class Panel extends JPanel {
         player.setCoordinates(newX, newY);
         if (player.collisionWith(exit))
             endWinLevel();
+        if (collisionWith(coins, player)){
+            coin_count++;
+            for(int i = 0; i < coins.size(); i++){
+                if (player.collisionWith(coins.get(i))){
+                    coins.remove(i);
+                    break;
+                }
+            }
+        }
 
         repaint();
     }
 
     private void endWinLevel(){
         isEnd = true;
-        System.out.println("You Win!");
+        System.out.println("You Win! Coins: " + coin_count);
     }
 
     //collisions
@@ -61,6 +74,7 @@ public class Panel extends JPanel {
     private boolean collisionWithAllObjects(int x, int y){
         if (player.collisionWith(x, y) || exit.collisionWith(x, y)) return true;
         if (walls != null && collisionWith(walls, x, y)) return true;
+        if (coins != null && collisionWith(coins, x, y)) return true;
         return false;
     }
     //---------------------------------------------------------------------------------------------------
@@ -72,6 +86,16 @@ public class Panel extends JPanel {
             if (collisionWithAllObjects(wall))
                 continue;
             walls.add(wall);
+        }
+    }
+
+    public void addCoins(){
+        coins = new ArrayList<Coin>();
+        while (coins.size() < Variables.COINS_COUNT){
+            Coin coin = new Coin();
+            if (collisionWithAllObjects(coin))
+                continue;
+            coins.add(coin);
         }
     }
 
@@ -89,6 +113,8 @@ public class Panel extends JPanel {
     public void drawObjects(Graphics gr){
         for (Wall wall: walls)
             wall.draw(gr);
+        for (Coin coin: coins)
+            coin.draw(gr);
         exit.draw(gr);
         player.draw(gr);
     }

@@ -5,6 +5,8 @@ import DataClasses.Variables;
 
 public class Enemy extends GameObject{
 
+    private int price = 10;
+
     public Enemy() {
         super(Images.SIMPLE_ENEMY);
     }
@@ -16,6 +18,10 @@ public class Enemy extends GameObject{
         if (n == 2) return new int[]{getX() + Variables.CELL_SIZE, getY()};
         if (n == 3) return new int[]{getX() - Variables.CELL_SIZE, getY()};
         return null;
+    }
+
+    public int getPrice(){
+        return price;
     }
 
 }

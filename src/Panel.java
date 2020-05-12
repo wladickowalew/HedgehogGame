@@ -21,6 +21,7 @@ public class Panel extends JPanel {
 
     public Panel(){
         setPreferredSize(new Dimension(Variables.FIELD_WIDTH, Variables.FIELD_HEIGHT));
+        coin_count = 0;
         startGame();
     }
 
@@ -30,7 +31,6 @@ public class Panel extends JPanel {
         isEnd = false;
         player = new Player();
         exit = new Exit();
-        coin_count = 0;
         addWalls();
         addCoins();
         addFires();
@@ -47,11 +47,17 @@ public class Panel extends JPanel {
     private void field_update(){
         for (Enemy enemy: enemies){
             int[] xy = enemy.getNewCoords();
-            if (collisionWith(walls, xy[0], xy[1]))
+            int i;
+            if ((i = collisionWith(walls, xy[0], xy[1])) != -1)
                 continue;
             enemy.setCoordinates(xy[0], xy[1]);
-            if (enemy.collisionWith(player))
-                endLoseGame();
+            if (enemy.collisionWith(player)) {
+                if (coin_count >= enemies.get(i).getPrice()) {
+                    enemies.remove(i);
+                    coin_count -= enemies.get(i).getPrice();
+                } else
+                    endLoseGame();
+            }
         }
         repaint();
     }
@@ -60,22 +66,27 @@ public class Panel extends JPanel {
         if (isEnd) return;
         int newX = player.getX() + dx * Variables.CELL_SIZE;
         int newY = player.getY() + dy * Variables.CELL_SIZE;
-        if (collisionWith(walls, newX, newY)) return;
+        if (collisionWith(walls, newX, newY) != -1) return;
         player.setCoordinates(newX, newY);
+        int i;
         if (player.collisionWith(exit))
             endWinLevel();
-        if (collisionWith(fires, player)||collisionWith(enemies, player))
-            endLoseGame();
-        if (collisionWith(coins, player)){
+        if ((i = collisionWith(fires, player)) != -1)
+            if(coin_count >= fires.get(i).getPrice()){
+                fires.remove(i);
+                coin_count-=fires.get(i).getPrice();
+            }else
+                endLoseGame();
+        if ((i = collisionWith(enemies, player)) != -1)
+            if(coin_count >= enemies.get(i).getPrice()){
+                enemies.remove(i);
+                coin_count -= enemies.get(i).getPrice();
+            }else
+                endLoseGame();
+        if ((i = collisionWith(coins, player)) != -1){
             coin_count++;
-            for(int i = 0; i < coins.size(); i++){
-                if (player.collisionWith(coins.get(i))){
-                    coins.remove(i);
-                    break;
-                }
-            }
+            coins.remove(i);
         }
-
         repaint();
     }
 
@@ -83,6 +94,8 @@ public class Panel extends JPanel {
         isEnd = true;
         updateTimer.stop();
         System.out.println("You Win! Coins: " + coin_count);
+        Variables.nextLevel();
+        startGame();
     }
 
     private void endLoseGame(){
@@ -93,15 +106,15 @@ public class Panel extends JPanel {
 
     //collisions
     //-------------------------------------------------------------------------------------------
-    private boolean collisionWith(ArrayList list, GameObject object){
+    private int collisionWith(ArrayList list, GameObject object){
         return collisionWith(list, object.getX(), object.getY());
     }
 
-    private boolean collisionWith(ArrayList list, int x, int y){
+    private int collisionWith(ArrayList list, int x, int y){
         for (GameObject object: (ArrayList<GameObject>)list)
             if (object.collisionWith(x, y))
-                return true;
-        return false;
+                return list.indexOf(object);
+        return -1;
     }
 
     private boolean collisionWithAllObjects(GameObject object){
@@ -110,10 +123,10 @@ public class Panel extends JPanel {
 
     private boolean collisionWithAllObjects(int x, int y){
         if (player.collisionWith(x, y) || exit.collisionWith(x, y)) return true;
-        if (walls != null && collisionWith(walls, x, y)) return true;
-        if (coins != null && collisionWith(coins, x, y)) return true;
-        if (fires != null && collisionWith(fires, x, y)) return true;
-        if (enemies != null && collisionWith(enemies, x, y)) return true;
+        if (walls != null && collisionWith(walls, x, y) != -1) return true;
+        if (coins != null && collisionWith(coins, x, y) != -1) return true;
+        if (fires != null && collisionWith(fires, x, y) != -1) return true;
+        if (enemies != null && collisionWith(enemies, x, y) != -1) return true;
         return false;
     }
     //---------------------------------------------------------------------------------------------------

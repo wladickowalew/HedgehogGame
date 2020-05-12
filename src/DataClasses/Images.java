@@ -9,6 +9,7 @@ public class Images {
 
     public static Image GRASS, PLAYER, EXIT;
     public static Image WALL, COIN, FIRE;
+    public static Image SIMPLE_ENEMY;
 
     public static void  loadImages(){
         try {
@@ -18,6 +19,7 @@ public class Images {
             EXIT   = ImageIO.read(new File("images/exit.png"));
             COIN   = ImageIO.read(new File("images/coin.png"));
             FIRE   = ImageIO.read(new File("images/fire.png"));
+            SIMPLE_ENEMY = ImageIO.read(new File("images/enemy.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

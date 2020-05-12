@@ -3,6 +3,8 @@ import DataClasses.Variables;
 import Objects.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Panel extends JPanel {
@@ -12,8 +14,10 @@ public class Panel extends JPanel {
     private ArrayList<Wall> walls;
     private ArrayList<Coin> coins;
     private ArrayList<Fire> fires;
+    private ArrayList<Enemy> enemies;
     private boolean isEnd;
     private int coin_count;
+    private Timer updateTimer;
 
     public Panel(){
         setPreferredSize(new Dimension(Variables.FIELD_WIDTH, Variables.FIELD_HEIGHT));
@@ -21,6 +25,8 @@ public class Panel extends JPanel {
     }
 
     private void startGame(){
+        if (updateTimer != null)
+            updateTimer.stop();
         isEnd = false;
         player = new Player();
         exit = new Exit();
@@ -28,6 +34,26 @@ public class Panel extends JPanel {
         addWalls();
         addCoins();
         addFires();
+        addEnemies();
+        updateTimer = new Timer(Variables.ENEMY_STEP_DELAY, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                field_update();
+            }
+        });
+        updateTimer.start();
+    }
+
+    private void field_update(){
+        for (Enemy enemy: enemies){
+            int[] xy = enemy.getNewCoords();
+            if (collisionWith(walls, xy[0], xy[1]))
+                continue;
+            enemy.setCoordinates(xy[0], xy[1]);
+            if (enemy.collisionWith(player))
+                endLoseGame();
+        }
+        repaint();
     }
 
     public void stepArrow(int dx, int dy){
@@ -38,7 +64,7 @@ public class Panel extends JPanel {
         player.setCoordinates(newX, newY);
         if (player.collisionWith(exit))
             endWinLevel();
-        if (collisionWith(fires, player))
+        if (collisionWith(fires, player)||collisionWith(enemies, player))
             endLoseGame();
         if (collisionWith(coins, player)){
             coin_count++;
@@ -55,11 +81,13 @@ public class Panel extends JPanel {
 
     private void endWinLevel(){
         isEnd = true;
+        updateTimer.stop();
         System.out.println("You Win! Coins: " + coin_count);
     }
 
     private void endLoseGame(){
         isEnd = true;
+        updateTimer.stop();
         System.out.println("You Lose! Coins: " + coin_count);
     }
 
@@ -85,6 +113,7 @@ public class Panel extends JPanel {
         if (walls != null && collisionWith(walls, x, y)) return true;
         if (coins != null && collisionWith(coins, x, y)) return true;
         if (fires != null && collisionWith(fires, x, y)) return true;
+        if (enemies != null && collisionWith(enemies, x, y)) return true;
         return false;
     }
     //---------------------------------------------------------------------------------------------------
@@ -119,6 +148,15 @@ public class Panel extends JPanel {
         }
     }
 
+    public void addEnemies(){
+        enemies = new ArrayList<Enemy>();
+        while (enemies.size() < Variables.ENEMY_COUNT){
+            Enemy enemy = new Enemy();
+            if (collisionWithAllObjects(enemy))
+                continue;
+            enemies.add(enemy);
+        }
+    }
     //PAINT
     //---------------------------------------------------------------------------------------------------
     public void drawGrass(Graphics gr){
@@ -137,6 +175,8 @@ public class Panel extends JPanel {
             coin.draw(gr);
         for (Fire fire: fires)
             fire.draw(gr);
+        for (Enemy enemy: enemies)
+            enemy.draw(gr);
         exit.draw(gr);
         player.draw(gr);
     }

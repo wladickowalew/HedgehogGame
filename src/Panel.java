@@ -1,5 +1,6 @@
 import DataClasses.Images;
 import DataClasses.Variables;
+import GUI.GameLabel;
 import Objects.*;
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +19,7 @@ public class Panel extends JPanel {
     private boolean isEnd;
     private int coin_count;
     private Timer updateTimer;
+    private GameLabel levelLBL, coinsLBL, restartLBL;
 
     public Panel(){
         setPreferredSize(new Dimension(Variables.FIELD_WIDTH, Variables.FIELD_HEIGHT));
@@ -42,6 +44,25 @@ public class Panel extends JPanel {
             }
         });
         updateTimer.start();
+        addLabels();
+    }
+
+    private void addLabels(){
+        setLayout(null);
+
+        levelLBL = new GameLabel("Level", Variables.LEVEL);
+        levelLBL.setLocation(10, 10);
+        add(levelLBL);
+
+        coinsLBL = new GameLabel("Coins", coin_count);
+        coinsLBL.setLocation(220, 10);
+        add(coinsLBL);
+
+    }
+
+    private void updateLabels(){
+        levelLBL.change(Variables.LEVEL);
+        coinsLBL.change(coin_count);
     }
 
     private void field_update(){
@@ -52,9 +73,9 @@ public class Panel extends JPanel {
                 continue;
             enemy.setCoordinates(xy[0], xy[1]);
             if (enemy.collisionWith(player)) {
-                if (coin_count >= enemies.get(i).getPrice()) {
+                if (coin_count >= enemy.getPrice()) {
                     enemies.remove(i);
-                    coin_count -= enemies.get(i).getPrice();
+                    coin_count -= enemy.getPrice();
                 } else
                     endLoseGame();
             }
@@ -73,14 +94,14 @@ public class Panel extends JPanel {
             endWinLevel();
         if ((i = collisionWith(fires, player)) != -1)
             if(coin_count >= fires.get(i).getPrice()){
-                fires.remove(i);
                 coin_count-=fires.get(i).getPrice();
+                fires.remove(i);
             }else
                 endLoseGame();
         if ((i = collisionWith(enemies, player)) != -1)
             if(coin_count >= enemies.get(i).getPrice()){
-                enemies.remove(i);
                 coin_count -= enemies.get(i).getPrice();
+                enemies.remove(i);
             }else
                 endLoseGame();
         if ((i = collisionWith(coins, player)) != -1){
@@ -198,6 +219,7 @@ public class Panel extends JPanel {
         super.paintComponent(gr);
         drawGrass(gr);
         drawObjects(gr);
+        updateLabels();
     }
 
 }

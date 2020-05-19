@@ -16,7 +16,7 @@ public class GameLabel extends JLabel {
     }
 
     public GameLabel(String text, int number){
-        super(text + ": " + number);
+        this(text + ": " + number);
         this.text = text;
     }
 

@@ -9,7 +9,7 @@ public class GameLabel extends JLabel {
 
     public GameLabel(String text){
         super(text);
-        setForeground(Color.WHITE);
+        setForeground(Color.BLUE);
         Font f = new Font("Comic Sans MS", 0, 24);
         setFont(f);
         setSize(200,30);

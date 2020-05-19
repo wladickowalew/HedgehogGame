@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class Panel extends JPanel {
@@ -22,8 +24,9 @@ public class Panel extends JPanel {
     private GameLabel levelLBL, coinsLBL, restartLBL;
 
     public Panel(){
-        setPreferredSize(new Dimension(Variables.FIELD_WIDTH, Variables.FIELD_HEIGHT));
+        setPreferredSize(new Dimension(Variables.FIELD_WIDTH, Variables.FIELD_HEIGHT + 30));
         coin_count = 0;
+        addLabels();
         startGame();
     }
 
@@ -44,19 +47,34 @@ public class Panel extends JPanel {
             }
         });
         updateTimer.start();
-        addLabels();
+    }
+
+    private void restartGame(){
+        coin_count = 0;
+        Variables.LEVEL = 1;
+        startGame();
     }
 
     private void addLabels(){
         setLayout(null);
 
         levelLBL = new GameLabel("Level", Variables.LEVEL);
-        levelLBL.setLocation(10, 10);
+        levelLBL.setLocation(10, Variables.FIELD_HEIGHT);
         add(levelLBL);
 
         coinsLBL = new GameLabel("Coins", coin_count);
-        coinsLBL.setLocation(220, 10);
+        coinsLBL.setLocation(220, Variables.FIELD_HEIGHT);
         add(coinsLBL);
+
+        restartLBL = new GameLabel("Restart");
+        restartLBL.setLocation(430, Variables.FIELD_HEIGHT);
+        restartLBL.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                restartGame();
+            }
+        });
+        add(restartLBL);
 
     }
 
@@ -74,8 +92,8 @@ public class Panel extends JPanel {
             enemy.setCoordinates(xy[0], xy[1]);
             if (enemy.collisionWith(player)) {
                 if (coin_count >= enemy.getPrice()) {
-                    enemies.remove(i);
                     coin_count -= enemy.getPrice();
+                    enemies.remove(enemies.indexOf(enemy));
                 } else
                     endLoseGame();
             }
@@ -123,6 +141,7 @@ public class Panel extends JPanel {
         isEnd = true;
         updateTimer.stop();
         System.out.println("You Lose! Coins: " + coin_count);
+        repaint();
     }
 
     //collisions
@@ -220,6 +239,11 @@ public class Panel extends JPanel {
         drawGrass(gr);
         drawObjects(gr);
         updateLabels();
+        if (isEnd){
+            int x = (Variables.FIELD_WIDTH - Images.END.getWidth(null)) / 2;
+            int y = (Variables.FIELD_HEIGHT - Images.END.getHeight(null)) / 2;
+            gr.drawImage(Images.END, x, y, null);
+        }
     }
 
 }
